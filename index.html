@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Приглашение на Ифтар и 8 Марта</title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background: url("https://source.unsplash.com/1600x900/?ramadan,flowers")
+          no-repeat center center/cover;
+        text-align: center;
+        color: white;
+        padding: 20px;
+      }
+      .container {
+        background: rgba(255, 182, 193, 0.9);
+        padding: 30px;
+        border-radius: 15px;
+        display: inline-block;
+        margin-top: 50px;
+        width: 80%;
+        max-width: 500px;
+        box-shadow: 0px 0px 20px rgba(255, 105, 180, 0.7);
+        animation: fadeIn 1s ease-in;
+      }
+      .button {
+        background: linear-gradient(45deg, #ff69b4, #ff1493);
+        color: white;
+        padding: 12px 25px;
+        border: none;
+        cursor: pointer;
+        font-size: 20px;
+        margin-top: 15px;
+        border-radius: 8px;
+        transition: 0.3s;
+        box-shadow: 0px 4px 10px rgba(255, 20, 147, 0.5);
+      }
+      .button:hover {
+        background: linear-gradient(45deg, #ff1493, #ff69b4);
+        transform: scale(1.1);
+      }
+      .message {
+        margin-top: 20px;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.9);
+        color: black;
+        border-radius: 5px;
+        display: none;
+        animation: fadeIn 0.5s ease-in;
+      }
+      .counter {
+        margin-top: 15px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #ff1493;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🌸 Приглашение на Ифтар и 8 Марта 🌸</h1>
+      <p>
+        Дорогие девушки 8Б класса!<br />Приглашаем вас на праздничный ифтар в
+        честь Рамадана и Международного женского дня!
+      </p>
+      <p><strong>Дата:</strong> 7 марта</p>
+      <p><strong>Место:</strong> Дом Атая</p>
+      <button class="button" onclick="confirmAttendance()">Я приду! 💖</button>
+      <div id="confirmationMessage" class="message"></div>
+      <p class="counter">Подтвердили участие: <span id="count">0</span></p>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyCrFs39ACdeGHM5T26xjfe1SP_AUQbntDo",
+        authDomain: "flux-398f9.firebaseapp.com",
+        projectId: "flux-398f9",
+        storageBucket: "flux-398f9.firebasestorage.app",
+        messagingSenderId: "19624600538",
+        appId: "1:19624600538:web:614bb850c3d74e60bcd6e3",
+      };
+
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+
+      const counterRef = db.collection("attendance").doc("counter");
+
+      function updateCounter() {
+        counterRef.get().then((doc) => {
+          if (doc.exists) {
+            document.getElementById("count").textContent = doc.data().count;
+          } else {
+            counterRef.set({ count: 0 });
+          }
+        });
+      }
+
+      function confirmAttendance() {
+        counterRef.update({
+          count: firebase.firestore.FieldValue.increment(1),
+        });
+        const message = document.getElementById("confirmationMessage");
+        message.innerHTML =
+          "💐 Спасибо за подтверждение! Ждем вас на ифтаре и с праздником 8 Марта. 💐";
+        message.style.display = "block";
+      }
+
+      counterRef.onSnapshot((doc) => {
+        document.getElementById("count").textContent = doc.data().count;
+      });
+
+      updateCounter();
+    </script>
+  </body>
+</html>
